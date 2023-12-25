@@ -12,7 +12,7 @@ const Input: React.FC<InputProps> = ({ users, sendChat }) => {
   const sendHandler = () => {
     sendChat(value);
     setValue("");
-  }
+  };
 
   const keyDownHandler = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -21,11 +21,13 @@ const Input: React.FC<InputProps> = ({ users, sendChat }) => {
     }
   };
   const changeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setValue(e.target.value);
+    if (e.target.value.length < 100) {
+      setValue(e.target.value);
+    }
   };
   const clickHandler = (e: React.MouseEvent) => {
     sendHandler();
-  }
+  };
 
   return (
     <div className="input-container">
@@ -41,7 +43,6 @@ const Input: React.FC<InputProps> = ({ users, sendChat }) => {
       <button onClick={clickHandler} className="submit-button" type="submit">
         Send
       </button>
-      <h2>{value}</h2>
     </div>
   );
 };
