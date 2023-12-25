@@ -1,24 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Names from "./components/Chatbox";
+import { users, users2 } from "./constants/users";
+import "./App.css";
 
-function App() {
+function App(): JSX.Element {
+  console.log('App renders')
+  const [userStore, setUsers] = useState([...users]);
+  console.log('usersStore', userStore);
+
+  useEffect(() => {
+    console.log('useEffect runs');
+    setUsers([...users2]);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="wrapper">
+      <div className="chatbox">
+        <Names users={userStore} />
+      </div>
     </div>
   );
 }
