@@ -73,5 +73,6 @@ button:hover {
   max-height: 350px;
   overflow: scroll;
   display: flex;
-  flex-direction: column-reverse;
+  /* keeps new text at bottom */
+  flex-direction: column-reverse; 
 }

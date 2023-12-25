@@ -19,8 +19,11 @@ const Names: React.FC<ChatboxProps> = ({ users, messages }) => {
       <div className="message" key={index}>
         <span style={{ color: message.color, fontWeight: "bold" }}>
           {message.senderName}:
-        </span>{" "}
-        {message.text}
+        </span>
+        {` ${message.text} `}
+        <span style={{fontSize: '8px'}}>
+            {message.createdAt}
+        </span>
       </div>
     );
   });

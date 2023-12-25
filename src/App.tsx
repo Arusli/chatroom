@@ -3,7 +3,7 @@ import Chatbox from "./components/Chatbox";
 import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
-import { users, messages as starterMessages } from "./constants/constants";
+import { users as starterUsers, messages as starterMessages } from "./constants/constants";
 import type { User, Message } from "./constants/constants";
 import "./App.css";
 
@@ -15,10 +15,10 @@ function App(): JSX.Element {
   };
 
   console.log("App renders");
-  const [userStore, setUsers] = useState([...users]);
+  const [users, setUsers] = useState([...starterUsers]);
   const [currentUser, setCurrentUser] = useState(blankUser); // blankuser
-  const [messageStore, setMessages] = useState([...starterMessages]);
-  console.log("usersStore", userStore);
+  const [messages, setMessages] = useState([...starterMessages]);
+  console.log("usersStore", users);
 
   useEffect(() => {
     console.log("useEffect runs");
@@ -42,15 +42,15 @@ function App(): JSX.Element {
       <div className="wrapper">
         <section className="section1">
           <div className="users-container">
-            <OnlineUsers users={userStore} />
+            <OnlineUsers users={users} />
           </div>
         </section>
         <section className="section2">
           <div className="chatbox-container">
-            <Chatbox users={userStore} messages={messageStore} />
+            <Chatbox users={users} messages={messages} />
           </div>
           <div className="input-container">
-            <Input users={userStore} sendChat={sendChat} />
+            <Input users={users} sendChat={sendChat} />
           </div>
         </section>
       </div>
@@ -60,7 +60,7 @@ function App(): JSX.Element {
       <div className="wrapper">
         <section className="section1">
           <div className="users-container">
-            <OnlineUsers users={userStore} />
+            <OnlineUsers users={users} />
           </div>
         </section>
         <section className="section2">
