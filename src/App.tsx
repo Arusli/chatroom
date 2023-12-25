@@ -3,20 +3,22 @@ import Chatbox from "./components/Chatbox";
 import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
-import { users, messages as starterMessages} from "./constants/constants";
+import { users, messages as starterMessages } from "./constants/constants";
 import type { User, Message } from "./constants/constants";
 import "./App.css";
 
 function App(): JSX.Element {
-
   const blankUser = {
-    name: '',
-    id: '',
-    color: '',
-  }
+    name: "",
+    id: "",
+    color: "",
+  };
+
   console.log("App renders");
   const [userStore, setUsers] = useState([...users]);
-  const [currentUser, setCurrentUser] = useState(users[0]);
+  // const [currentUser, setCurrentUser] = useState(users[0]); // user
+  const [currentUser, setCurrentUser] = useState(blankUser); // blankuser
+
   const [messageStore, setMessages] = useState([...starterMessages]);
   console.log("usersStore", userStore);
 
@@ -32,10 +34,9 @@ function App(): JSX.Element {
         senderName: currentUser.name,
         senderId: currentUser.id,
         timeSent: new Date().toISOString(),
-      }
+      };
       return [...currentMessages, messageObj];
     });
-
   };
 
   if (currentUser.name) {
@@ -59,11 +60,17 @@ function App(): JSX.Element {
   } else {
     return (
       <div className="wrapper">
-        <Login currentUser={currentUser} setCurrentUser={setCurrentUser} />
+        <section className="section1">
+          <div className="users-container">
+            <OnlineUsers users={userStore} />
+          </div>
+        </section>
+        <section className="section2">
+          <Login currentUser={currentUser} setCurrentUser={setCurrentUser} />
+        </section>
       </div>
-    )
+    );
   }
-  
 }
 
 export default App;

@@ -21,7 +21,7 @@
   align-items: flex-start;
 }
 
-.submit-button {
+button {
   margin: 0 10px;
   padding: 5px;
   width: 80px;
@@ -40,6 +40,11 @@ textarea {
   resize: none;
 }
 
+input {
+  padding: 10px;
+  border-radius: 100px;
+}
+
 ul {
   list-style-position: inside;
 }
@@ -51,4 +56,14 @@ button:hover {
 
 .users-container {
   margin: 10px;
+}
+
+.login-container {
+  border: solid 1px black;
+  margin: 10px;
+  padding: 10px;
+}
+
+.login-container h2 {
+  margin-bottom: 10px;
 }

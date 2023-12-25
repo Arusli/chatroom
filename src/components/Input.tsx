@@ -10,8 +10,10 @@ const Input: React.FC<InputProps> = ({ users, sendChat }) => {
   const [value, setValue] = useState(""); // value as a state causes UI to re-render upon change
   // handlers
   const sendHandler = () => {
-    sendChat(value);
-    setValue("");
+    if (value.length > 0) {
+      sendChat(value);
+      setValue("");
+    }
   };
 
   const keyDownHandler = (e: React.KeyboardEvent) => {
@@ -35,6 +37,7 @@ const Input: React.FC<InputProps> = ({ users, sendChat }) => {
     <div className="input-container">
       <div>
         <textarea
+          autoFocus
           value={value}
           onChange={changeHandler}
           onKeyDown={keyDownHandler}
