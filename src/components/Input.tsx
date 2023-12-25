@@ -20,11 +20,13 @@ const Input: React.FC<InputProps> = ({ users, sendChat }) => {
       sendHandler();
     }
   };
+
   const changeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length < 100) {
       setValue(e.target.value);
     }
   };
+
   const clickHandler = (e: React.MouseEvent) => {
     sendHandler();
   };

@@ -11,6 +11,7 @@
 
 .message {
   overflow-wrap: break-word;
+  white-space: pre-line;
 }
 
 .input-container {
