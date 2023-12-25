@@ -8,7 +8,7 @@ interface NamesProps {
 const Names: React.FC<NamesProps> = ({ users }) => {
 
     const list = users.map( (user, index) => {
-        return <div key={index}><span style={{color: user.color}}>{user.name}:</span> {user.message}</div>;
+        return <div key={index}><span style={{color: user.color, fontWeight: 'bold'}}>{user.name}:</span> {user.message}</div>;
     });
     return <div>{list}</div>;
 }
