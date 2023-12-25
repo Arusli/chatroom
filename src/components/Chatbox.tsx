@@ -16,7 +16,7 @@ const Names: React.FC<ChatboxProps> = ({ users, messages}) => {
 
     const list = messages.map( (message, index) => {
         assignMessageColor(users, message);
-        return <div key={index}><span style={{color: message.color, fontWeight: 'bold'}}>{message.senderName}:</span> {message.text}</div>;
+        return <div className='message' key={index}><span style={{color: message.color, fontWeight: 'bold'}}>{message.senderName}:</span> {message.text}</div>;
     });
     return <div>{list}</div>;
 }
