@@ -1,13 +1,15 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export type User = {
   name: string;
-  id: number;
+  id: string;
   color: string;
 };
 
 export type Message = {
   text: string;
   senderName: string;
-  senderId: number;
+  senderId: string;
   timeSent: string;
   color?: string;
 }
@@ -15,17 +17,17 @@ export type Message = {
 export const users: User[] = [
   {
     name: `Andrew`,
-    id: 1,
+    id: 'f47ac10b-58cc-4372-a567-0e02b2c3d471',
     color: `blue`,
   },
   {
     name: `David`,
-    id: 2,
+    id: 'f47ac10b-58cc-4372-a567-0e02b2c3d472',
     color: `red`,
   },
   {
     name: 'Robert',
-    id: 3,
+    id: 'f47ac10b-58cc-4372-a567-0e02b2c3d473',
     color: 'green'
   }
 ];
@@ -35,19 +37,19 @@ const nowUtc = new Date().toISOString();
 export const messages: Message[] = [
   {
     senderName: `Andrew`,
-    senderId: 1,
+    senderId: 'f47ac10b-58cc-4372-a567-0e02b2c3d471',
     text: `its me andrew, wanna watch a movie?`,
     timeSent: nowUtc,
   },
   {
     senderName: `David`,
-    senderId: 2,
+    senderId: 'f47ac10b-58cc-4372-a567-0e02b2c3d472',
     text: `hey andrew. David here. Sure!`,
     timeSent: nowUtc,
   },
   {
     senderName: `Robert`,
-    senderId: 3,
+    senderId: 'f47ac10b-58cc-4372-a567-0e02b2c3d473',
     text: `I'll join`,
     timeSent: nowUtc,
   },
