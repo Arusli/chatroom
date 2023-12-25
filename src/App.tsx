@@ -18,10 +18,19 @@ function App(): JSX.Element {
   }, []);
 
   const sendChat = (newMessage: string) => {
+    // set current user
     setCurrentUser((currentUser: User) => {
       return { ...currentUser, message: newMessage };
     });
     // set users
+    setUsers((users: User[]) => {
+      const foundUser = users.find(e => e.id === currentUser.id);
+      if (foundUser) {
+        foundUser.message = newMessage;
+      }
+      return users;
+    });
+
   };
 
   return (
