@@ -16,9 +16,7 @@ function App(): JSX.Element {
 
   console.log("App renders");
   const [userStore, setUsers] = useState([...users]);
-  // const [currentUser, setCurrentUser] = useState(users[0]); // user
   const [currentUser, setCurrentUser] = useState(blankUser); // blankuser
-
   const [messageStore, setMessages] = useState([...starterMessages]);
   console.log("usersStore", userStore);
 
@@ -66,7 +64,7 @@ function App(): JSX.Element {
           </div>
         </section>
         <section className="section2">
-          <Login currentUser={currentUser} setCurrentUser={setCurrentUser} />
+          <Login currentUser={currentUser} setCurrentUser={setCurrentUser} setUsers={setUsers} />
         </section>
       </div>
     );
