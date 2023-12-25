@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "../constants/users";
+import { User } from "../constants/constants";
 
 interface OnlineUsersProps {
   users: User[]; // Define the props you expect

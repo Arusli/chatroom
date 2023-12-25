@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User } from "../constants/users";
+import { User } from "../constants/constants";
 
 interface InputProps {
   users: User[]; // Define the props you expect
