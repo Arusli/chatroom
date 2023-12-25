@@ -31,7 +31,7 @@ function App(): JSX.Element {
         text: newMessage,
         senderName: currentUser.name,
         senderId: currentUser.id,
-        timeSent: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       };
       return [...currentMessages, messageObj];
     });

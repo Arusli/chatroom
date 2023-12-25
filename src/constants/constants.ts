@@ -10,7 +10,7 @@ export type Message = {
   text: string;
   senderName: string;
   senderId: string;
-  timeSent: string;
+  createdAt: string;
   color?: string;
 };
 
@@ -39,19 +39,19 @@ export const messages: Message[] = [
     senderName: `Andrew`,
     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d471",
     text: `its me andrew, wanna watch a movie?`,
-    timeSent: nowUtc,
+    createdAt: nowUtc,
   },
   {
     senderName: `David`,
     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d472",
     text: `hey andrew. David here. Sure!`,
-    timeSent: nowUtc,
+    createdAt: nowUtc,
   },
   {
     senderName: `Robert`,
     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d473",
     text: `I'll join`,
-    timeSent: nowUtc,
+    createdAt: nowUtc,
   },
 ];
 
@@ -60,7 +60,6 @@ const colors: string[] = [
   "red",
   "green",
   "purple",
-  "cyan",
   "orange",
   "black",
 ];

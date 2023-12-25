@@ -64,6 +64,14 @@ button:hover {
   padding: 10px;
 }
 
-.login-container h2 {
+.login-container h3 {
   margin-bottom: 10px;
+}
+
+.chatbox-container {
+  min-height: 80px;
+  max-height: 350px;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column-reverse;
 }

@@ -40,8 +40,9 @@ const Login: React.FC<LoginProps> = ({
 
   return (
     <div className="login-container">
+        <h3>Join the Chat?</h3>
       <input
-        placeholder="Name"
+        placeholder="Enter Your Name"
         autoFocus
         value={value}
         onChange={handleChange}
