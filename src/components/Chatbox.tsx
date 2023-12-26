@@ -21,7 +21,7 @@ const Names: React.FC<ChatboxProps> = ({ users, messages }) => {
     if (message.status === "entrance") {
       previousMessage = message;
       return (
-        <div className="message" style={{ marginBottom: "12px" }} key={index}>
+        <div className="message" style={{ marginTop: "12px" }} key={index}>
           <div className="header">
             <span style={{ color: message.color, fontWeight: "bold" }}>
               {`${message.senderName} has joined the chat.`}
@@ -37,7 +37,7 @@ const Names: React.FC<ChatboxProps> = ({ users, messages }) => {
     } else if (message.status === "exit") {
       previousMessage = message;
       return (
-        <div className="message" style={{ marginBottom: "12px" }} key={index}>
+        <div className="message" style={{ marginTop: "12px" }} key={index}>
           <div className="header">
             <span style={{ color: message.color, fontWeight: "bold" }}>
               {`${message.senderName} has left the chat.`}
@@ -51,13 +51,13 @@ const Names: React.FC<ChatboxProps> = ({ users, messages }) => {
         </div>
       );
     } else if (index !== 0 && previousMessage.status === 'message' && previousMessage.senderId === message.senderId) {
+      // same user is messaging consecutively
       previousMessage = message;
       return (
-        <div className="message" style={{ marginBottom: "12px" }} key={index}>
+        <div className="message" style={{ marginTop: "2px" }} key={index}>
           <div className="header">
             <div
               className="text"
-              style={{ marginTop: "2px" }}
             >{` ${message.text} `}</div>
           </div>
         </div>
@@ -65,7 +65,7 @@ const Names: React.FC<ChatboxProps> = ({ users, messages }) => {
     } else {
         previousMessage = message;
         return (
-          <div className="message" style={{ marginBottom: "12px" }} key={index}>
+          <div className="message" style={{ marginTop: "12px" }} key={index}>
             <div className="header">
               <span style={{ color: message.color, fontWeight: "bold" }}>
                 {message.senderName}
