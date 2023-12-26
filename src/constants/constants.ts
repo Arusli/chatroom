@@ -28,7 +28,7 @@ export const users: User[] = [
   {
     name: `David`,
     id: "f47ac10b-58cc-4372-a567-0e02b2c3d472",
-    color: `red`,
+    color: `purple`,
     online: true,
   },
   {
@@ -67,7 +67,6 @@ export const messages: Message[] = [
 
 const colors: string[] = [
   "blue",
-  "red",
   "green",
   "purple",
   "orange",

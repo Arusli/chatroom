@@ -42,17 +42,13 @@ const Names: React.FC<ChatboxProps> = ({ users, messages }) => {
         <div className="message" style={{ marginBottom: "12px" }} key={index}>
           <div className="header">
             <span style={{ color: message.color, fontWeight: "bold" }}>
-              {message.senderName}
+              {`${message.senderName} has joined the chat.`}
             </span>
             <span
               style={{ fontSize: "10px", marginLeft: "8px", color: "grey" }}
             >
               {utcToLocal(message.createdAt)}
             </span>
-            <div
-              className="text"
-              style={{ marginTop: "2px", color: 'grey' }}
-            >{`has joined the chat`}</div>
           </div>
         </div>
       );
@@ -63,17 +59,13 @@ const Names: React.FC<ChatboxProps> = ({ users, messages }) => {
           <div className="message" style={{ marginBottom: "12px" }} key={index}>
             <div className="header">
               <span style={{ color: message.color, fontWeight: "bold" }}>
-                {message.senderName}
+                {`${message.senderName} has left the chat.`}
               </span>
               <span
                 style={{ fontSize: "10px", marginLeft: "8px", color: "grey" }}
               >
                 {utcToLocal(message.createdAt)}
               </span>
-              <div
-                className="text"
-                style={{ marginTop: "2px", color: 'grey' }}
-              >{`has left the chat`}</div>
             </div>
           </div>
         );
