@@ -15,7 +15,7 @@ export type Message = {
   senderId: string;
   createdAt: string;
   color?: string;
-  status: Status;
+  status?: Status;
 };
 
 export const users: User[] = [
