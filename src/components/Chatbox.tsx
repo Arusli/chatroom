@@ -1,5 +1,5 @@
 import React from "react";
-import { User, Message } from "../constants/constants";
+import { User, Message, utcToLocal } from "../constants/constants";
 
 interface ChatboxProps {
   users: User[]; // Define the props you expect
@@ -15,17 +15,69 @@ const Names: React.FC<ChatboxProps> = ({ users, messages }) => {
 
   const messageList = messages.map((message, index) => {
     assignMessageColor(users, message);
-    return (
-      <div className="message" key={index}>
-        <span style={{ color: message.color, fontWeight: "bold" }}>
-          {message.senderName}:
-        </span>
-        {` ${message.text} `}
-        <span style={{fontSize: '8px'}}>
-            {message.createdAt}
-        </span>
-      </div>
-    );
+    //
+    if (message.status === "message") {
+      return (
+        <div className="message" style={{ marginBottom: "12px" }} key={index}>
+          <div className="header">
+            <span style={{ color: message.color, fontWeight: "bold" }}>
+              {message.senderName}
+            </span>
+            <span
+              style={{ fontSize: "10px", marginLeft: "8px", color: "grey" }}
+            >
+              {utcToLocal(message.createdAt)}
+            </span>
+            <div
+              className="text"
+              style={{ marginTop: "2px" }}
+            >{` ${message.text} `}</div>
+          </div>
+        </div>
+      );
+    }
+    //
+    if (message.status === "entrance") {
+      return (
+        <div className="message" style={{ marginBottom: "12px" }} key={index}>
+          <div className="header">
+            <span style={{ color: message.color, fontWeight: "bold" }}>
+              {message.senderName}
+            </span>
+            <span
+              style={{ fontSize: "10px", marginLeft: "8px", color: "grey" }}
+            >
+              {utcToLocal(message.createdAt)}
+            </span>
+            <div
+              className="text"
+              style={{ marginTop: "2px", color: 'grey' }}
+            >{`has joined the chat`}</div>
+          </div>
+        </div>
+      );
+    }
+    //
+    if (message.status === "exit") {
+        return (
+          <div className="message" style={{ marginBottom: "12px" }} key={index}>
+            <div className="header">
+              <span style={{ color: message.color, fontWeight: "bold" }}>
+                {message.senderName}
+              </span>
+              <span
+                style={{ fontSize: "10px", marginLeft: "8px", color: "grey" }}
+              >
+                {utcToLocal(message.createdAt)}
+              </span>
+              <div
+                className="text"
+                style={{ marginTop: "2px", color: 'grey' }}
+              >{`has left the chat`}</div>
+            </div>
+          </div>
+        );
+      }
   });
   return <div>{messageList}</div>;
 };

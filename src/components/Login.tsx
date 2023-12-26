@@ -1,16 +1,24 @@
 import React, { useState } from "react";
-import { User, pickColor, generateId } from "../constants/constants";
+import {
+  User,
+  Message,
+  Status,
+  pickColor,
+  generateId,
+} from "../constants/constants";
 
 interface LoginProps {
   currentUser: User; // Define the props you expect
   setCurrentUser: React.Dispatch<React.SetStateAction<User>>;
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
 }
 
 const Login: React.FC<LoginProps> = ({
   currentUser,
   setCurrentUser,
   setUsers,
+  setMessages,
 }) => {
   const [value, setValue] = useState("");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,27 +28,45 @@ const Login: React.FC<LoginProps> = ({
   };
 
   const enter = () => {
-    const newUser = { ...currentUser, name: value, color: pickColor(), id: generateId() };
+    const newUser = {
+      ...currentUser,
+      name: value,
+      color: pickColor(),
+      id: generateId(),
+      online: true,
+    };
     setCurrentUser(newUser);
     setUsers((users) => {
       return [...users, newUser];
     });
+    setMessages((messages) => {
+      const entranceMessage = {
+        senderName: newUser.name,
+        senderId: newUser.id,
+        createdAt: new Date().toISOString(),
+        text: "",
+        status: "entrance" as Status,
+      };
+      return [...messages, entranceMessage];
+    });
   };
 
   const keyDownHandler = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey && value.length > 1) {
       e.preventDefault(); // prevents new line inside text area
       enter();
     }
   };
 
   const clickHandler = (e: React.MouseEvent) => {
-    enter();
+    if (value.length > 1) {
+      enter();
+    }
   };
 
   return (
     <div className="login-container">
-        <h3>Join the Chat?</h3>
+      <h3>Join the Chat?</h3>
       <input
         placeholder="Enter Your Name"
         autoFocus

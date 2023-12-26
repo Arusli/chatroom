@@ -4,7 +4,7 @@ import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
 import { users as starterUsers, messages as starterMessages } from "./constants/constants";
-import type { User, Message } from "./constants/constants";
+import type { User, Message, Status} from "./constants/constants";
 import "./App.css";
 
 function App(): JSX.Element {
@@ -12,12 +12,13 @@ function App(): JSX.Element {
     name: "",
     id: "",
     color: "",
+    online: false,
   };
 
   console.log("App renders");
-  const [users, setUsers] = useState([...starterUsers]);
-  const [currentUser, setCurrentUser] = useState(blankUser); // blankuser
-  const [messages, setMessages] = useState([...starterMessages]);
+  const [users, setUsers] = useState<User[]>([...starterUsers]);
+  const [currentUser, setCurrentUser] = useState<User>(blankUser); // blankuser
+  const [messages, setMessages] = useState<Message[]>([...starterMessages]);
   console.log("usersStore", users);
 
   useEffect(() => {
@@ -32,6 +33,7 @@ function App(): JSX.Element {
         senderName: currentUser.name,
         senderId: currentUser.id,
         createdAt: new Date().toISOString(),
+        status: 'message' as Status,
       };
       return [...currentMessages, messageObj];
     });
@@ -64,7 +66,7 @@ function App(): JSX.Element {
           </div>
         </section>
         <section className="section2">
-          <Login currentUser={currentUser} setCurrentUser={setCurrentUser} setUsers={setUsers} />
+          <Login currentUser={currentUser} setCurrentUser={setCurrentUser} setUsers={setUsers} setMessages={setMessages} />
         </section>
       </div>
     );
