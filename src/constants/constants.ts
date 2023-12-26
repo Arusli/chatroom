@@ -16,6 +16,7 @@ export type Message = {
   createdAt: string;
   color?: string;
   status?: Status;
+  key?: string; // use with firebase?
 };
 
 export const users: User[] = [
@@ -39,28 +40,34 @@ export const users: User[] = [
   },
 ];
 
-const nowUtc = new Date().toISOString();
+const setUtc = (milliseconds: number) => {
+  const now = new Date();
+  const newTime = now.getTime() + milliseconds;
+  const newDate = new Date(newTime);
+  return newDate.toISOString();
+}
+
 
 export const messages: Message[] = [
   {
     senderName: `Andrew`,
     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d471",
     text: `its me andrew, wanna watch a movie?`,
-    createdAt: nowUtc,
+    createdAt: setUtc(1),
     status: 'message',
   },
   {
     senderName: `David`,
     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d472",
     text: `hey andrew. David here. Sure!`,
-    createdAt: nowUtc,
+    createdAt: setUtc(2),
     status: 'message'
   },
   {
     senderName: `Robert`,
     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d473",
     text: `I'll join`,
-    createdAt: nowUtc,
+    createdAt: setUtc(3),
     status: 'exit',
   },
 ];
