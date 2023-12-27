@@ -18,9 +18,9 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
-const db = getDatabase();
-const usersReference = ref(db, "users");
-const messagesReference = ref(db, "messages");
+export const db = getDatabase();
+export const usersReference = ref(db, "users");
+export const messagesReference = ref(db, "messages");
 
 export const writeUser = (name, color, online) => {
   push(usersReference, {
@@ -48,9 +48,9 @@ export const writeMessage = (
   });
 };
 
-export let userSnapshot;
+let userSnapshot;
 
-onValue(usersReference, (snapshot) => {
-    userSnapshot = snapshot.val();
-    console.log('snapshot', userSnapshot);
-});
+// onValue(usersReference, (snapshot) => {
+//     userSnapshot = snapshot.val();
+//     console.log('snapshot', userSnapshot);
+// });

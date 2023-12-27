@@ -4,12 +4,12 @@ import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
 import {
-  users as starterUsers,
-  messages as starterMessages,
+  messages as starterMessages, arrayFromObj
 } from "./constants/constants";
 import type { User, Message, Status } from "./constants/constants";
 import "./App.css";
-import { app, writeUser, writeMessage, userSnapshot } from "./firebase";
+import { writeUser, writeMessage, usersReference } from "./firebase";
+import { onValue } from "@firebase/database";
 
 function App(): JSX.Element {
   const blankUser = {
@@ -21,14 +21,31 @@ function App(): JSX.Element {
 
   console.log("App renders");
   const [users, setUsers] = useState<User[]>([]);
+  const [usersDb, setUsersDb] = useState<any>({});
   const [currentUser, setCurrentUser] = useState<User>(blankUser); // blankuser
   const [messages, setMessages] = useState<Message[]>([...starterMessages]);
   // console.log("usersStore", users);
-  console.log("app.tsx userSnapshot", userSnapshot);
+  // console.log("app.tsx userSnapshot", userSnapshot);
 
   useEffect(() => {
     console.log("useEffect runs");
+    onValue(usersReference, (snapshot) => {
+      console.log('onValue runs');
+      if (snapshot.exists()) {
+        console.log('snapshot exists')
+        const userSnapshot = snapshot.val();
+        setUsersDb(userSnapshot);
+      } else {
+        console.log('no data available');
+      }
+    }, (error) => {
+      console.error(error);
+    })
   }, []);
+
+  useEffect(() => {
+    console.log('Updated usersDb:', usersDb);
+}, [usersDb]);
 
   const sendChat = (newMessage: string) => {
     // set users
@@ -79,7 +96,7 @@ function App(): JSX.Element {
       <div className="wrapper">
         <section className="section1">
           <div className="users-container">
-            <OnlineUsers users={users} />
+            <OnlineUsers users={users} usersDb={usersDb} />
           </div>
         </section>
         <section className="section2">
@@ -98,7 +115,7 @@ function App(): JSX.Element {
       <div className="wrapper">
         <section className="section1">
           <div className="users-container">
-            <OnlineUsers users={users} />
+            <OnlineUsers users={users} usersDb={usersDb} />
           </div>
         </section>
         <section className="section2">

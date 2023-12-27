@@ -96,3 +96,15 @@ export const utcToLocal = (utcTimestamp: string) => {
   const minutes = localTime.getMinutes().toString().padStart(2, '0');
   return hours + ':' + minutes;
 }
+
+export const arrayFromObj = (obj: any) => {
+  const array = Object.keys(obj).map((key) => {
+    return {
+      id: key,
+      name: obj[key].name,
+      color: obj[key].color,
+      online: obj[key].online,
+    }
+  })
+  return array;
+}
