@@ -9,7 +9,7 @@ import {
 } from "./constants/constants";
 import type { User, Message, Status } from "./constants/constants";
 import "./App.css";
-import { app } from "./firebase";
+import { app, writeUser, writeMessage } from "./firebase";
 
 function App(): JSX.Element {
   const blankUser = {
@@ -27,6 +27,8 @@ function App(): JSX.Element {
 
   useEffect(() => {
     console.log("useEffect runs");
+    writeUser('Andrew', 'purple', true);
+    writeMessage('hey its me', 'Andrew', '12345', 'createed12271093498UTC', 'red', 'message');
   }, []);
 
   const sendChat = (newMessage: string) => {
