@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, ref, set, push } from "firebase/database";
+import { getDatabase, ref, set, push, onValue } from "firebase/database";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -19,10 +19,11 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
 const db = getDatabase();
+const usersReference = ref(db, "users");
+const messagesReference = ref(db, "messages");
 
 export const writeUser = (name, color, online) => {
-  const reference = ref(db, "users");
-  push(reference, {
+  push(usersReference, {
     name,
     color,
     online,
@@ -37,8 +38,7 @@ export const writeMessage = (
   color,
   status
 ) => {
-  const reference = ref(db, "messages");
-  push(reference, {
+  push(messagesReference, {
     text,
     senderName,
     senderId,
@@ -47,3 +47,7 @@ export const writeMessage = (
     status,
   });
 };
+
+onValue(usersReference, (snapshot) => {
+    console.log('snapshot', snapshot.val());
+});

@@ -20,7 +20,7 @@ function App(): JSX.Element {
   };
 
   console.log("App renders");
-  const [users, setUsers] = useState<User[]>([...starterUsers]);
+  const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>(blankUser); // blankuser
   const [messages, setMessages] = useState<Message[]>([...starterMessages]);
   console.log("usersStore", users);
