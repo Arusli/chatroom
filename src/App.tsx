@@ -3,9 +3,13 @@ import Chatbox from "./components/Chatbox";
 import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
-import { users as starterUsers, messages as starterMessages } from "./constants/constants";
-import type { User, Message, Status} from "./constants/constants";
+import {
+  users as starterUsers,
+  messages as starterMessages,
+} from "./constants/constants";
+import type { User, Message, Status } from "./constants/constants";
 import "./App.css";
+import { app } from "./firebase";
 
 function App(): JSX.Element {
   const blankUser = {
@@ -33,7 +37,7 @@ function App(): JSX.Element {
         senderName: currentUser.name,
         senderId: currentUser.id,
         createdAt: new Date().toISOString(),
-        status: 'message' as Status,
+        status: "message" as Status,
       };
       return [...currentMessages, messageObj];
     });
@@ -66,7 +70,12 @@ function App(): JSX.Element {
           </div>
         </section>
         <section className="section2">
-          <Login currentUser={currentUser} setCurrentUser={setCurrentUser} setUsers={setUsers} setMessages={setMessages} />
+          <Login
+            currentUser={currentUser}
+            setCurrentUser={setCurrentUser}
+            setUsers={setUsers}
+            setMessages={setMessages}
+          />
         </section>
       </div>
     );
