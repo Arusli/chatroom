@@ -63,7 +63,7 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
         />
       );
     } else if (
-      index !== 0 &&
+      index > 0 &&
       previousMessage.status === "message" &&
       previousMessage.senderId === message.senderId
     ) { // same user is messaging consecutively

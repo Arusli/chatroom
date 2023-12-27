@@ -10,8 +10,15 @@ const OnlineUsers: React.FC<OnlineUsersProps> = ({ users }) => {
   const list = filteredUsers.map((user, index) => {
     return <li key={index}>{user.name}</li>;
   });
+
+  const usersContainerCss = {
+    height: '150px',
+    maxHeight: '200px,',
+    overflow: 'scroll',
+    padding: '5px',
+  }
   return (
-    <div className="users-container">
+    <div className="users-container" style={usersContainerCss}>
       <h2>{`${filteredUsers.length} `}Users Online</h2>
       <ul>{list}</ul>
     </div>

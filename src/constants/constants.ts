@@ -36,7 +36,7 @@ export const users: User[] = [
     name: "Robert",
     id: "f47ac10b-58cc-4372-a567-0e02b2c3d473",
     color: "green",
-    online: true,
+    online: false,
   },
 ];
 
