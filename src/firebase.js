@@ -48,6 +48,9 @@ export const writeMessage = (
   });
 };
 
+export let userSnapshot;
+
 onValue(usersReference, (snapshot) => {
-    console.log('snapshot', snapshot.val());
+    userSnapshot = snapshot.val();
+    console.log('snapshot', userSnapshot);
 });

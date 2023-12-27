@@ -9,7 +9,7 @@ import {
 } from "./constants/constants";
 import type { User, Message, Status } from "./constants/constants";
 import "./App.css";
-import { app, writeUser, writeMessage } from "./firebase";
+import { app, writeUser, writeMessage, userSnapshot } from "./firebase";
 
 function App(): JSX.Element {
   const blankUser = {
@@ -23,12 +23,11 @@ function App(): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>(blankUser); // blankuser
   const [messages, setMessages] = useState<Message[]>([...starterMessages]);
-  console.log("usersStore", users);
+  // console.log("usersStore", users);
+  console.log("app.tsx userSnapshot", userSnapshot);
 
   useEffect(() => {
     console.log("useEffect runs");
-    writeUser('Andrew', 'purple', true);
-    writeMessage('hey its me', 'Andrew', '12345', 'createed12271093498UTC', 'red', 'message');
   }, []);
 
   const sendChat = (newMessage: string) => {
@@ -44,6 +43,26 @@ function App(): JSX.Element {
       return [...currentMessages, messageObj];
     });
   };
+
+  const writeDb = <div>
+  <button onClick={() => writeUser("Andrew", "purple", true)}>
+    Write User
+  </button>
+  <button
+    onClick={() =>
+      writeMessage(
+        "hey its me",
+        "Andrew",
+        "12345",
+        "createed12271093498UTC",
+        "red",
+        "message"
+      )
+    }
+  >
+    Write Message
+  </button>
+</div>
 
   if (currentUser.name) {
     return (
@@ -61,6 +80,7 @@ function App(): JSX.Element {
             <Input users={users} sendChat={sendChat} />
           </div>
         </section>
+        {writeDb}
       </div>
     );
   } else {
@@ -79,6 +99,7 @@ function App(): JSX.Element {
             setMessages={setMessages}
           />
         </section>
+        {writeDb}
       </div>
     );
   }
