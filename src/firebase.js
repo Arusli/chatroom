@@ -22,7 +22,7 @@ export const db = getDatabase();
 export const usersReference = ref(db, "users");
 export const messagesReference = ref(db, "messages");
 
-export const writeUser = (name, color, online) => {
+export const writeUser = ({name, color, online}) => {
   push(usersReference, {
     name,
     color,
@@ -31,13 +31,13 @@ export const writeUser = (name, color, online) => {
 };
 
 export const writeMessage = (
-  text,
+  {text,
   senderName,
   senderId,
   createdAt,
   color,
   status
-) => {
+  }) => {
   push(messagesReference, {
     text,
     senderName,

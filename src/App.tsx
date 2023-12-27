@@ -4,7 +4,7 @@ import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
 import {
-  messages as starterMessages, arrayFromObj
+  mockMessages, arrayFromObj
 } from "./constants/constants";
 import type { User, Message, Status } from "./constants/constants";
 import "./App.css";
@@ -21,9 +21,9 @@ function App(): JSX.Element {
 
   console.log("App renders");
   const [users, setUsers] = useState<User[]>([]);
-  const [usersDb, setUsersDb] = useState<any>({});
+  // const [usersDb, setUsersDb] = useState<any>({});
   const [currentUser, setCurrentUser] = useState<User>(blankUser); // blankuser
-  const [messages, setMessages] = useState<Message[]>([...starterMessages]);
+  const [messages, setMessages] = useState<Message[]>([...mockMessages]);
   // console.log("usersStore", users);
   // console.log("app.tsx userSnapshot", userSnapshot);
 
@@ -34,7 +34,7 @@ function App(): JSX.Element {
       if (snapshot.exists()) {
         console.log('snapshot exists')
         const userSnapshot = snapshot.val();
-        setUsersDb(userSnapshot);
+        setUsers(arrayFromObj(userSnapshot));
       } else {
         console.log('no data available');
       }
@@ -44,8 +44,8 @@ function App(): JSX.Element {
   }, []);
 
   useEffect(() => {
-    console.log('Updated usersDb:', usersDb);
-}, [usersDb]);
+    console.log('Updated users:', users);
+}, [users]);
 
   const sendChat = (newMessage: string) => {
     // set users
@@ -65,8 +65,8 @@ function App(): JSX.Element {
     <div>
       <div>
         <button
-          style={{ width: "150px" }}
-          onClick={() => writeUser("Andrew", "purple", true)}
+          style={{ width: "150px" , margin: '10px'}}
+          onClick={() => writeUser({name: "Andrew", color: "purple", online: true})}
         >
           Write User
         </button>
@@ -75,14 +75,14 @@ function App(): JSX.Element {
         <button
           style={{ width: "150px" }}
           onClick={() =>
-            writeMessage(
-              "hey its me",
-              "Andrew",
-              "12345",
-              "createed12271093498UTC",
-              "red",
-              "message"
-            )
+            writeMessage({
+              text: "hey its me",
+              senderName: "Andrew",
+              senderId: "12345",
+              createdAt: "createed12271093498UTC",
+              color: "red",
+              status: "message"
+            })
           }
         >
           Write Message
@@ -96,7 +96,7 @@ function App(): JSX.Element {
       <div className="wrapper">
         <section className="section1">
           <div className="users-container">
-            <OnlineUsers users={users} usersDb={usersDb} />
+            <OnlineUsers users={users} />
           </div>
         </section>
         <section className="section2">
@@ -115,7 +115,7 @@ function App(): JSX.Element {
       <div className="wrapper">
         <section className="section1">
           <div className="users-container">
-            <OnlineUsers users={users} usersDb={usersDb} />
+            <OnlineUsers users={users} />
           </div>
         </section>
         <section className="section2">

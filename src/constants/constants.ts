@@ -19,7 +19,7 @@ export type Message = {
   key?: string; // use with firebase?
 };
 
-export const users: User[] = [
+export const mockUsers: User[] = [
   {
     name: `Andrew`,
     id: "f47ac10b-58cc-4372-a567-0e02b2c3d471",
@@ -48,7 +48,7 @@ const setUtc = (milliseconds: number) => {
 }
 
 
-export const messages: Message[] = [
+export const mockMessages: Message[] = [
   {
     senderName: `Andrew`,
     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d471",

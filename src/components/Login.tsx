@@ -6,6 +6,7 @@ import {
   pickColor,
   generateId,
 } from "../constants/constants";
+import { writeUser } from "../firebase";
 
 interface LoginProps {
   currentUser: User; // Define the props you expect
@@ -36,9 +37,11 @@ const Login: React.FC<LoginProps> = ({
       online: true,
     };
     setCurrentUser(newUser);
-    setUsers((users) => {
-      return [...users, newUser];
-    });
+    writeUser({
+      name: newUser.name,
+      color: newUser.color,
+      online: newUser.online,
+    })
     setMessages((messages) => {
       const entranceMessage = {
         senderName: newUser.name,
