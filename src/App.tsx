@@ -44,25 +44,35 @@ function App(): JSX.Element {
     });
   };
 
-  const writeDb = <div>
-  <button onClick={() => writeUser("Andrew", "purple", true)}>
-    Write User
-  </button>
-  <button
-    onClick={() =>
-      writeMessage(
-        "hey its me",
-        "Andrew",
-        "12345",
-        "createed12271093498UTC",
-        "red",
-        "message"
-      )
-    }
-  >
-    Write Message
-  </button>
-</div>
+  const writeDb = (
+    <div>
+      <div>
+        <button
+          style={{ width: "150px" }}
+          onClick={() => writeUser("Andrew", "purple", true)}
+        >
+          Write User
+        </button>
+      </div>
+      <div>
+        <button
+          style={{ width: "150px" }}
+          onClick={() =>
+            writeMessage(
+              "hey its me",
+              "Andrew",
+              "12345",
+              "createed12271093498UTC",
+              "red",
+              "message"
+            )
+          }
+        >
+          Write Message
+        </button>
+      </div>
+    </div>
+  );
 
   if (currentUser.name) {
     return (
