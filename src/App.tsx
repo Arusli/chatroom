@@ -3,9 +3,7 @@ import Chatbox from "./components/Chatbox";
 import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
-import {
-  mockMessages, arrayFromObj
-} from "./constants/constants";
+import { mockMessages, arrayFromObj, generateId } from "./constants/constants";
 import type { User, Message, Status } from "./constants/constants";
 import "./App.css";
 import { writeUser, writeMessage, usersReference } from "./firebase";
@@ -29,23 +27,27 @@ function App(): JSX.Element {
 
   useEffect(() => {
     console.log("useEffect runs");
-    onValue(usersReference, (snapshot) => {
-      console.log('onValue runs');
-      if (snapshot.exists()) {
-        console.log('snapshot exists')
-        const userSnapshot = snapshot.val();
-        setUsers(arrayFromObj(userSnapshot));
-      } else {
-        console.log('no data available');
+    onValue(
+      usersReference,
+      (snapshot) => {
+        console.log("onValue runs");
+        if (snapshot.exists()) {
+          console.log("snapshot exists");
+          const userSnapshot = snapshot.val();
+          setUsers(arrayFromObj(userSnapshot));
+        } else {
+          console.log("no data available");
+        }
+      },
+      (error) => {
+        console.error(error);
       }
-    }, (error) => {
-      console.error(error);
-    })
+    );
   }, []);
 
   useEffect(() => {
-    console.log('Updated users:', users);
-}, [users]);
+    console.log("Updated users:", users);
+  }, [users]);
 
   const sendChat = (newMessage: string) => {
     // set users
@@ -65,8 +67,10 @@ function App(): JSX.Element {
     <div>
       <div>
         <button
-          style={{ width: "150px" , margin: '10px'}}
-          onClick={() => writeUser({name: "Andrew", color: "purple", online: true})}
+          style={{ width: "150px", margin: "10px" }}
+          onClick={() =>
+            writeUser({ name: "Andrew", color: "purple", online: true, id: generateId() })
+          }
         >
           Write User
         </button>
@@ -81,7 +85,7 @@ function App(): JSX.Element {
               senderId: "12345",
               createdAt: "createed12271093498UTC",
               color: "red",
-              status: "message"
+              status: "message",
             })
           }
         >

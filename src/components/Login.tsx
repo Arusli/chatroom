@@ -18,7 +18,6 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({
   currentUser,
   setCurrentUser,
-  setUsers,
   setMessages,
 }) => {
   const [value, setValue] = useState("");
@@ -41,6 +40,7 @@ const Login: React.FC<LoginProps> = ({
       name: newUser.name,
       color: newUser.color,
       online: newUser.online,
+      id: newUser.id,
     })
     setMessages((messages) => {
       const entranceMessage = {
