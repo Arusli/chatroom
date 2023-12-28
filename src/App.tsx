@@ -11,6 +11,7 @@ import {
   pushMessage,
   usersNodeReference,
   messagesNodeReference,
+  setUserDisconnect
 } from "./firebase";
 import { onValue } from "@firebase/database";
 
@@ -86,6 +87,7 @@ function App(): JSX.Element {
         color: currentUser.color,
         status: 'entrance'
       })
+      setUserDisconnect(currentUser);
     } else {
       return;
     }

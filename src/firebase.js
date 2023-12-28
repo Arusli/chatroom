@@ -9,7 +9,9 @@ import {
   set,
   push,
   onValue,
+  onDisconnect,
 } from "firebase/database";
+import { setUtc } from "./constants/constants";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -77,3 +79,13 @@ export const getUserByKey = async (userKey) => {
 //     const userSnapshot = snapshot.val();
 //     console.log('snapshot', userSnapshot);
 // });
+
+export const setUserDisconnect = async (user) => {
+  console.log("setUserDisconnect runs");
+  try {
+    const userReference = ref(db, `users/${user.id}`);
+    await onDisconnect(userReference).update({online: false});
+  } catch (e) {
+    console.error(e);
+  }
+};
