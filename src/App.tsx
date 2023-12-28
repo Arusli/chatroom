@@ -3,10 +3,15 @@ import Chatbox from "./components/Chatbox";
 import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
-import { mockMessages, arrayFromObj } from "./constants/constants";
+import { mockMessages, arrayFromUsersObj, arrayFromMessagesObj } from "./constants/constants";
 import type { User, Message, Status } from "./constants/constants";
 import "./App.css";
-import { pushUser, pushMessage, usersReference } from "./firebase";
+import {
+  pushUser,
+  pushMessage,
+  usersNodeReference,
+  messagesNodeReference,
+} from "./firebase";
 import { onValue } from "@firebase/database";
 
 function App(): JSX.Element {
@@ -21,20 +26,41 @@ function App(): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   // const [usersDb, setUsersDb] = useState<any>({});
   const [currentUser, setCurrentUser] = useState<User>(blankUser); // blankuser
-  const [messages, setMessages] = useState<Message[]>([...mockMessages]);
+  const [messages, setMessages] = useState<Message[]>([]);
   // console.log("usersStore", users);
   // console.log("app.tsx userSnapshot", userSnapshot);
+
 
   useEffect(() => {
     console.log("useEffect runs");
     onValue(
-      usersReference,
+      usersNodeReference,
       (snapshot) => {
         console.log("onValue runs");
         if (snapshot.exists()) {
           console.log("snapshot exists");
           const userSnapshot = snapshot.val();
-          setUsers(arrayFromObj(userSnapshot));
+          setUsers(arrayFromUsersObj(userSnapshot));
+        } else {
+          console.log("no data available");
+        }
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    console.log("useEffect runs");
+    onValue(
+      messagesNodeReference,
+      (snapshot) => {
+        console.log("onValue runs");
+        if (snapshot.exists()) {
+          console.log("snapshot exists");
+          const messagesSnapshot = snapshot.val();
+          setMessages(arrayFromMessagesObj(messagesSnapshot));
         } else {
           console.log("no data available");
         }
@@ -82,10 +108,10 @@ function App(): JSX.Element {
           onClick={() =>
             pushMessage({
               text: "hey its me",
-              senderName: "Andrew",
-              senderId: "12345",
+              senderName: currentUser.name,
+              senderId: currentUser.id,
               createdAt: "createed12271093498UTC",
-              color: "red",
+              color: currentUser.color,
               status: "message",
             })
           }

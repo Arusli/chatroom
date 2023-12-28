@@ -97,13 +97,28 @@ export const utcToLocal = (utcTimestamp: string) => {
   return hours + ':' + minutes;
 }
 
-export const arrayFromObj = (obj: any) => {
+export const arrayFromUsersObj = (obj: any) => {
   const array = Object.keys(obj).map((key) => {
     return {
       id: key,
       name: obj[key].name,
       color: obj[key].color,
       online: obj[key].online,
+    }
+  })
+  return array;
+}
+
+export const arrayFromMessagesObj = (obj: any) => {
+  const array = Object.keys(obj).map((key) => {
+    return {
+      id: key,
+      text: obj[key].text,
+      senderName: obj[key].senderName,
+      senderId: obj[key].senderId,
+      createdAt: obj[key].createdAt,
+      color: obj[key].color,
+      status: obj[key].status,
     }
   })
   return array;

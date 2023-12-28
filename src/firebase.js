@@ -27,11 +27,11 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
 export const db = getDatabase();
-export const usersReference = ref(db, "users");
-export const messagesReference = ref(db, "messages");
+export const usersNodeReference = ref(db, "users");
+export const messagesNodeReference = ref(db, "messages");
 
 export const pushUser = async ({ name, color, online }) => {
-  const referenceId = push(usersReference, {
+  const referenceId = push(usersNodeReference, {
     name,
     color,
     online,
@@ -47,7 +47,7 @@ export const pushMessage = async ({
   color,
   status,
 }) => {
-  const referenceId = push(messagesReference, {
+  const referenceId = push(messagesNodeReference, {
     text,
     senderName,
     senderId,
