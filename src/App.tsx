@@ -3,10 +3,10 @@ import Chatbox from "./components/Chatbox";
 import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
-import { mockMessages, arrayFromObj, generateId } from "./constants/constants";
+import { mockMessages, arrayFromObj } from "./constants/constants";
 import type { User, Message, Status } from "./constants/constants";
 import "./App.css";
-import { writeUser, writeMessage, usersReference } from "./firebase";
+import { pushUser, pushMessage, usersReference } from "./firebase";
 import { onValue } from "@firebase/database";
 
 function App(): JSX.Element {
@@ -47,7 +47,8 @@ function App(): JSX.Element {
 
   useEffect(() => {
     console.log("Updated users:", users);
-  }, [users]);
+    console.log("current user", currentUser);
+  }, [users, currentUser]);
 
   const sendChat = (newMessage: string) => {
     // set users
@@ -69,7 +70,7 @@ function App(): JSX.Element {
         <button
           style={{ width: "150px", margin: "10px" }}
           onClick={() =>
-            writeUser({ name: "Andrew", color: "purple", online: true, id: generateId() })
+            pushUser({ name: "Andrew", color: "purple", online: true })
           }
         >
           Write User
@@ -79,7 +80,7 @@ function App(): JSX.Element {
         <button
           style={{ width: "150px" }}
           onClick={() =>
-            writeMessage({
+            pushMessage({
               text: "hey its me",
               senderName: "Andrew",
               senderId: "12345",

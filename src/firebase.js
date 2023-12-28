@@ -1,7 +1,15 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, ref, set, push, onValue } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  get,
+  child,
+  set,
+  push,
+  onValue,
+} from "firebase/database";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -22,36 +30,50 @@ export const db = getDatabase();
 export const usersReference = ref(db, "users");
 export const messagesReference = ref(db, "messages");
 
-export const writeUser = ({name, color, online, id}) => {
-  push(usersReference, {
+export const pushUser = async ({ name, color, online }) => {
+  const referenceId = push(usersReference, {
     name,
     color,
     online,
-    id,
-  });
+  }).key;
+  return referenceId;
 };
 
-export const writeMessage = (
-  {text,
+export const pushMessage = async ({
+  text,
   senderName,
   senderId,
   createdAt,
   color,
-  status
-  }) => {
-  push(messagesReference, {
+  status,
+}) => {
+  const referenceId = push(messagesReference, {
     text,
     senderName,
     senderId,
     createdAt,
     color,
     status,
-  });
+  }).key;
+  return referenceId;
 };
 
-let userSnapshot;
+export const getUserByKey = async (userKey) => {
+  try {
+    const snapshot = await get(ref(db, `users/${userKey}`));
+    if (snapshot.exists()) {
+      console.log("snapshot", snapshot.val());
+      return snapshot.val();
+    } else {
+      console.log("No data available");
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 // onValue(usersReference, (snapshot) => {
-//     userSnapshot = snapshot.val();
+//     const userSnapshot = snapshot.val();
 //     console.log('snapshot', userSnapshot);
 // });

@@ -100,7 +100,7 @@ export const utcToLocal = (utcTimestamp: string) => {
 export const arrayFromObj = (obj: any) => {
   const array = Object.keys(obj).map((key) => {
     return {
-      id: obj[key].id,
+      id: key,
       name: obj[key].name,
       color: obj[key].color,
       online: obj[key].online,

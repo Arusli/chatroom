@@ -4,9 +4,8 @@ import {
   Message,
   Status,
   pickColor,
-  generateId,
 } from "../constants/constants";
-import { writeUser } from "../firebase";
+import { pushUser, getUserByKey } from "../firebase";
 
 interface LoginProps {
   currentUser: User; // Define the props you expect
@@ -27,22 +26,22 @@ const Login: React.FC<LoginProps> = ({
     }
   };
 
-  const enter = () => {
+  const enter = async () => {
     const newUser = {
       ...currentUser,
       name: value,
       color: pickColor(),
-      id: generateId(),
       online: true,
     };
-    setCurrentUser(newUser);
-    writeUser({
+    const currentUserKey = await pushUser({
       name: newUser.name,
       color: newUser.color,
       online: newUser.online,
-      id: newUser.id,
     })
-    setMessages((messages) => {
+    const newUserWithKey = await getUserByKey(currentUserKey);
+    newUserWithKey.id = currentUserKey;
+    setCurrentUser(newUserWithKey);
+    setMessages((messages) => { // replace with pushMessage
       const entranceMessage = {
         senderName: newUser.name,
         senderId: newUser.id,
