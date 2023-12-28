@@ -40,7 +40,7 @@ export const mockUsers: User[] = [
   },
 ];
 
-const setUtc = (milliseconds: number) => {
+export const setUtc = (milliseconds: number) => {
   const now = new Date();
   const newTime = now.getTime() + milliseconds;
   const newDate = new Date(newTime);

@@ -3,8 +3,8 @@ import Chatbox from "./components/Chatbox";
 import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
-import { mockMessages, arrayFromUsersObj, arrayFromMessagesObj } from "./constants/constants";
-import type { User, Message, Status } from "./constants/constants";
+import { arrayFromUsersObj, arrayFromMessagesObj, setUtc } from "./constants/constants";
+import type { User, Message } from "./constants/constants";
 import "./App.css";
 import {
   pushUser,
@@ -76,18 +76,30 @@ function App(): JSX.Element {
     console.log("current user", currentUser);
   }, [users, currentUser]);
 
-  const sendChat = (newMessage: string) => {
-    // set users
-    setMessages((currentMessages: Message[]) => {
-      const messageObj = {
-        text: newMessage,
+  useEffect(() => {
+    if (currentUser.name) {
+      pushMessage({
+        text: '',
         senderName: currentUser.name,
         senderId: currentUser.id,
-        createdAt: new Date().toISOString(),
-        status: "message" as Status,
-      };
-      return [...currentMessages, messageObj];
-    });
+        createdAt: setUtc(0),
+        color: currentUser.color,
+        status: 'entrance'
+      })
+    } else {
+      return;
+    }
+  }, [currentUser]);
+
+  const sendChat = (newMessage: string) => {
+    pushMessage({
+      text: newMessage,
+      senderName: currentUser.name,
+      senderId: currentUser.id,
+      createdAt: setUtc(0),
+      color: currentUser.color,
+      status: "message",
+    })
   };
 
   const writeDb = (
@@ -154,7 +166,6 @@ function App(): JSX.Element {
             currentUser={currentUser}
             setCurrentUser={setCurrentUser}
             setUsers={setUsers}
-            setMessages={setMessages}
           />
         </section>
         {writeDb}

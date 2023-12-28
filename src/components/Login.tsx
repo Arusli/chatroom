@@ -1,23 +1,16 @@
 import React, { useState } from "react";
-import {
-  User,
-  Message,
-  Status,
-  pickColor,
-} from "../constants/constants";
-import { pushUser, getUserByKey } from "../firebase";
+import { User, Message, Status, pickColor } from "../constants/constants";
+import { pushUser, getUserByKey, pushMessage } from "../firebase";
 
 interface LoginProps {
   currentUser: User; // Define the props you expect
   setCurrentUser: React.Dispatch<React.SetStateAction<User>>;
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
 }
 
 const Login: React.FC<LoginProps> = ({
   currentUser,
   setCurrentUser,
-  setMessages,
 }) => {
   const [value, setValue] = useState("");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,20 +30,10 @@ const Login: React.FC<LoginProps> = ({
       name: newUser.name,
       color: newUser.color,
       online: newUser.online,
-    })
+    });
     const newUserWithKey = await getUserByKey(currentUserKey);
     newUserWithKey.id = currentUserKey;
-    setCurrentUser(newUserWithKey);
-    setMessages((messages) => { // replace with pushMessage
-      const entranceMessage = {
-        senderName: newUser.name,
-        senderId: newUser.id,
-        createdAt: new Date().toISOString(),
-        text: "",
-        status: "entrance" as Status,
-      };
-      return [...messages, entranceMessage];
-    });
+    setCurrentUser(newUserWithKey); //updates currentUser, triggers useEffect
   };
 
   const keyDownHandler = (e: React.KeyboardEvent) => {
