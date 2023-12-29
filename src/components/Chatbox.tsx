@@ -11,10 +11,7 @@ interface FormatterProps {
   alert: string;
 }
 
-const AlertFormatter: React.FC<FormatterProps> = ({
-  message,
-  alert,
-}) => {
+const AlertFormatter: React.FC<FormatterProps> = ({ message, alert }) => {
   return (
     <div className="message" style={{ marginTop: "12px" }}>
       <div className="header">
@@ -33,20 +30,31 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
   console.log("chat re-renders");
   // assign the correct user color to each message, for new messages only
   const assignMessageColor = (users: User[], message: Message) => {
-    if (!message.color) { // new messages don't have a color
-        const sender = users.find((user) => user.id === message.senderId);
-        message.color = sender?.color;
+    if (!message.color) {
+      // new messages don't have a color
+      const sender = users.find((user) => user.id === message.senderId);
+      message.color = sender?.color;
     }
   };
 
   let previousMessage: Message; // tracks consecutive messaging
+
+  // remove doubles
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].status === "exit" && messages[i - 1].status === "exit") {
+      if (messages[i].senderId === messages[i - 1].senderId) {
+        messages.splice(i, 1);
+      }
+    }
+  }
 
   // formats and returns entire list of messages for display
   // runs every time there is a new message
   const messageList = messages.map((message, index) => {
     assignMessageColor(users, message);
     //
-    if (message.status === "entrance") { // user joins
+    if (message.status === "entrance") {
+      // user joins
       previousMessage = message;
       return (
         <AlertFormatter
@@ -55,7 +63,8 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
           alert="has joined the chat"
         />
       );
-    } else if (message.status === "exit") { // user leaves
+    } else if (message.status === "exit") {
+      // user leaves
       previousMessage = message;
       return (
         <AlertFormatter
@@ -68,7 +77,8 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
       index > 0 &&
       previousMessage.status === "message" &&
       previousMessage.senderId === message.senderId
-    ) { // same user is messaging consecutively
+    ) {
+      // same user is messaging consecutively
       previousMessage = message;
       return (
         <div className="message" style={{ marginTop: "2px" }} key={message.id}>
@@ -77,7 +87,8 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
           </div>
         </div>
       );
-    } else { // standard first message
+    } else {
+      // standard first message
       previousMessage = message;
       return (
         <div className="message" style={{ marginTop: "12px" }} key={message.id}>
