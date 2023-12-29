@@ -31,10 +31,12 @@ const AlertFormatter: React.FC<FormatterProps> = ({
 
 const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
   console.log("chat re-renders");
-  // assign the correct user color to each message
+  // assign the correct user color to each message, for new messages only
   const assignMessageColor = (users: User[], message: Message) => {
-    const sender = users.find((user) => user.id === message.senderId);
-    message.color = sender?.color;
+    if (!message.color) { // new messages don't have a color
+        const sender = users.find((user) => user.id === message.senderId);
+        message.color = sender?.color;
+    }
   };
 
   let previousMessage: Message; // tracks consecutive messaging

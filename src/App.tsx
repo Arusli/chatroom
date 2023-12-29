@@ -3,7 +3,11 @@ import Chatbox from "./components/Chatbox";
 import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
 import Login from "./components/Login";
-import { arrayFromUsersObj, arrayFromMessagesObj, setUtc } from "./constants/constants";
+import {
+  arrayFromUsersObj,
+  arrayFromMessagesObj,
+  setUtc,
+} from "./constants/constants";
 import type { User, Message } from "./constants/constants";
 import "./App.css";
 import {
@@ -11,7 +15,8 @@ import {
   pushMessage,
   usersNodeReference,
   messagesNodeReference,
-  setUserDisconnect
+  setUserDisconnect,
+  removeUser
 } from "./firebase";
 import { onValue } from "@firebase/database";
 
@@ -31,7 +36,6 @@ function App(): JSX.Element {
   // console.log("usersStore", users);
   // console.log("app.tsx userSnapshot", userSnapshot);
 
-
   useEffect(() => {
     console.log("useEffect runs");
     onValue(
@@ -40,8 +44,17 @@ function App(): JSX.Element {
         console.log("onValue runs");
         if (snapshot.exists()) {
           console.log("snapshot exists");
-          const userSnapshot = snapshot.val();
-          setUsers(arrayFromUsersObj(userSnapshot));
+          const usersSnapshot = snapshot.val();
+          let usersArray = arrayFromUsersObj(usersSnapshot);
+          const offlineUser = usersArray.find((user) => {
+            return !user.online;
+          });
+          if (offlineUser) {
+            const index = usersArray.indexOf(offlineUser);
+            usersArray.splice(index, 1);
+            removeUser(offlineUser);
+          }
+          setUsers(usersArray);
         } else {
           console.log("no data available");
         }
@@ -80,13 +93,13 @@ function App(): JSX.Element {
   useEffect(() => {
     if (currentUser.name) {
       pushMessage({
-        text: '',
+        text: "",
         senderName: currentUser.name,
         senderId: currentUser.id,
         createdAt: setUtc(0),
         color: currentUser.color,
-        status: 'entrance'
-      })
+        status: "entrance",
+      });
       setUserDisconnect(currentUser);
     } else {
       return;
@@ -101,7 +114,7 @@ function App(): JSX.Element {
       createdAt: setUtc(0),
       color: currentUser.color,
       status: "message",
-    })
+    });
   };
 
   const writeDb = (
@@ -152,7 +165,7 @@ function App(): JSX.Element {
             <Input users={users} sendChat={sendChat} />
           </div>
         </section>
-        {writeDb}
+        {/* {writeDb} */}
       </div>
     );
   } else {
@@ -170,7 +183,7 @@ function App(): JSX.Element {
             setUsers={setUsers}
           />
         </section>
-        {writeDb}
+        {/* {writeDb} */}
       </div>
     );
   }

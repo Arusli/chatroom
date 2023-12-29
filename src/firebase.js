@@ -5,13 +5,10 @@ import {
   getDatabase,
   ref,
   get,
-  child,
-  set,
   push,
-  onValue,
   onDisconnect,
+  remove,
 } from "firebase/database";
-import { setUtc } from "./constants/constants";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -59,6 +56,15 @@ export const pushMessage = async ({
   }).key;
   return referenceId;
 };
+
+export const removeUser = async (user) => {
+  const reference = ref(db, `users/${user.id}`);
+  try {
+    await remove(reference);
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 export const getUserByKey = async (userKey) => {
   try {
