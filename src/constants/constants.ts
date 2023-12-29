@@ -10,13 +10,13 @@ export type User = {
 export type Status = 'entrance' | 'exit' | 'message';
 
 export type Message = {
+  id: string;
   text: string;
   senderName: string;
   senderId: string;
   createdAt: string;
   color?: string;
   status?: Status;
-  key?: string; // use with firebase?
 };
 
 export const mockUsers: User[] = [
@@ -48,29 +48,29 @@ export const setUtc = (milliseconds: number) => {
 }
 
 
-export const mockMessages: Message[] = [
-  {
-    senderName: `Andrew`,
-    senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d471",
-    text: `its me andrew, wanna watch a movie?`,
-    createdAt: setUtc(1),
-    status: 'message',
-  },
-  {
-    senderName: `David`,
-    senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d472",
-    text: `hey andrew. David here. Sure!`,
-    createdAt: setUtc(2),
-    status: 'message'
-  },
-  {
-    senderName: `Robert`,
-    senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d473",
-    text: `I'll join`,
-    createdAt: setUtc(3),
-    status: 'exit',
-  },
-];
+// export const mockMessages: Message[] = [
+//   {
+//     senderName: `Andrew`,
+//     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d471",
+//     text: `its me andrew, wanna watch a movie?`,
+//     createdAt: setUtc(1),
+//     status: 'message',
+//   },
+//   {
+//     senderName: `David`,
+//     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d472",
+//     text: `hey andrew. David here. Sure!`,
+//     createdAt: setUtc(2),
+//     status: 'message'
+//   },
+//   {
+//     senderName: `Robert`,
+//     senderId: "f47ac10b-58cc-4372-a567-0e02b2c3d473",
+//     text: `I'll join`,
+//     createdAt: setUtc(3),
+//     status: 'exit',
+//   },
+// ];
 
 const colors: string[] = [
   "blue",

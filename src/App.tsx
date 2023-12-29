@@ -49,10 +49,18 @@ function App(): JSX.Element {
           const offlineUser = usersArray.find((user) => {
             return !user.online;
           });
-          if (offlineUser) {
+          if (offlineUser) { // what if there are multiple offline users? this only runs when someone is online
             const index = usersArray.indexOf(offlineUser);
             usersArray.splice(index, 1);
             removeUser(offlineUser);
+            pushMessage({
+              text: '',
+              senderName: offlineUser.name,
+              senderId: offlineUser.id,
+              createdAt: setUtc(0),
+              color: offlineUser.color,
+              status: 'exit',
+            })
           }
           setUsers(usersArray);
         } else {

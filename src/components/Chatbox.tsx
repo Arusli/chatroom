@@ -51,7 +51,7 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
       return (
         <AlertFormatter
           message={message}
-          key={message.createdAt}
+          key={message.id}
           alert="has joined the chat"
         />
       );
@@ -60,7 +60,7 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
       return (
         <AlertFormatter
           message={message}
-          key={message.createdAt}
+          key={message.id}
           alert="has left the chat"
         />
       );
@@ -71,7 +71,7 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
     ) { // same user is messaging consecutively
       previousMessage = message;
       return (
-        <div className="message" style={{ marginTop: "2px" }} key={message.createdAt}>
+        <div className="message" style={{ marginTop: "2px" }} key={message.id}>
           <div className="header">
             <div className="text">{` ${message.text} `}</div>
           </div>
@@ -80,7 +80,7 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
     } else { // standard first message
       previousMessage = message;
       return (
-        <div className="message" style={{ marginTop: "12px" }} key={message.createdAt}>
+        <div className="message" style={{ marginTop: "12px" }} key={message.id}>
           <div className="header">
             <span style={{ color: message.color, fontWeight: "bold" }}>
               {message.senderName}
