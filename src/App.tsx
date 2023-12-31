@@ -81,7 +81,7 @@ function App(): JSX.Element {
     console.log("useEffect runs");
     const limitedQuery = query(messagesNodeReference, limitToLast(250
       )); // queries last 250 messages
-    const unsubscribe = onValue(
+    const unsubscribe = onValue( // returns an unsubscribe function to remove listener
       limitedQuery,
       (snapshot) => {
         console.log("onValue runs");
@@ -99,7 +99,7 @@ function App(): JSX.Element {
     );
 
     return () => {
-      unsubscribe();
+      unsubscribe(); // calls unsubscribe
     }
   }, []);
 
