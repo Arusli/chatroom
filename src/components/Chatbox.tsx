@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { User, Message, utcToLocal } from "../constants/constants";
 
 interface ChatboxProps {
@@ -38,15 +38,6 @@ const Chat: React.FC<ChatboxProps> = ({ users, messages }) => {
   };
 
   let previousMessage: Message; // tracks consecutive messaging
-
-  // remove doubles
-  for (let i = messages.length - 1; i >= 0; i--) {
-    if (messages[i].status === "exit" && messages[i - 1].status === "exit") {
-      if (messages[i].senderId === messages[i - 1].senderId) {
-        messages.splice(i, 1);
-      }
-    }
-  }
 
   // formats and returns entire list of messages for display
   // runs every time there is a new message

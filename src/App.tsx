@@ -18,7 +18,7 @@ import {
   setUserDisconnect,
   removeUser
 } from "./firebase";
-import { onValue } from "@firebase/database";
+import { onValue, query, limitToLast } from "@firebase/database";
 
 function App(): JSX.Element {
   const blankUser = {
@@ -38,7 +38,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     console.log("useEffect runs");
-    onValue(
+    const unsubscribe = onValue( // fixes double messaging somehow
       usersNodeReference,
       (snapshot) => {
         console.log("onValue runs");
@@ -71,12 +71,18 @@ function App(): JSX.Element {
         console.error(error);
       }
     );
+
+    return () => {
+      unsubscribe();
+    }
   }, []);
 
   useEffect(() => {
     console.log("useEffect runs");
-    onValue(
-      messagesNodeReference,
+    const limitedQuery = query(messagesNodeReference, limitToLast(250
+      )); // queries last 250 messages
+    const unsubscribe = onValue(
+      limitedQuery,
       (snapshot) => {
         console.log("onValue runs");
         if (snapshot.exists()) {
@@ -91,12 +97,17 @@ function App(): JSX.Element {
         console.error(error);
       }
     );
+
+    return () => {
+      unsubscribe();
+    }
   }, []);
 
   useEffect(() => {
     console.log("Updated users:", users);
     console.log("current user", currentUser);
-  }, [users, currentUser]);
+    console.log("messages", messages);
+  }, [users, currentUser, messages]);
 
   useEffect(() => {
     if (currentUser.name) {
