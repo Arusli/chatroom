@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { User, Message, Status, pickColor } from "../constants/constants";
-import { pushUser, getUserByKey, pushMessage } from "../firebase";
+import { User, pickColor } from "../constants/constants";
+import { pushUser, getUserByKey} from "../firebase";
 
 interface LoginProps {
   currentUser: User; // Define the props you expect

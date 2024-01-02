@@ -11,7 +11,6 @@ import {
 import type { User, Message } from "./constants/constants";
 import "./App.css";
 import {
-  pushUser,
   pushMessage,
   usersNodeReference,
   messagesNodeReference,
@@ -136,37 +135,37 @@ function App(): JSX.Element {
     });
   };
 
-  const writeDb = (
-    <div>
-      <div>
-        <button
-          style={{ width: "150px", margin: "10px" }}
-          onClick={() =>
-            pushUser({ name: "Andrew", color: "purple", online: true })
-          }
-        >
-          Write User
-        </button>
-      </div>
-      <div>
-        <button
-          style={{ width: "150px" }}
-          onClick={() =>
-            pushMessage({
-              text: "hey its me",
-              senderName: currentUser.name,
-              senderId: currentUser.id,
-              createdAt: "createed12271093498UTC",
-              color: currentUser.color,
-              status: "message",
-            })
-          }
-        >
-          Write Message
-        </button>
-      </div>
-    </div>
-  );
+  // const writeDb = (
+  //   <div>
+  //     <div>
+  //       <button
+  //         style={{ width: "150px", margin: "10px" }}
+  //         onClick={() =>
+  //           pushUser({ name: "Andrew", color: "purple", online: true })
+  //         }
+  //       >
+  //         Write User
+  //       </button>
+  //     </div>
+  //     <div>
+  //       <button
+  //         style={{ width: "150px" }}
+  //         onClick={() =>
+  //           pushMessage({
+  //             text: "hey its me",
+  //             senderName: currentUser.name,
+  //             senderId: currentUser.id,
+  //             createdAt: "createed12271093498UTC",
+  //             color: currentUser.color,
+  //             status: "message",
+  //           })
+  //         }
+  //       >
+  //         Write Message
+  //       </button>
+  //     </div>
+  //   </div>
+  // );
 
   if (currentUser.name) {
     return (
