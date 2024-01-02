@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { User } from "../constants/constants";
+import styles from "./Input.module.css";
 
 interface InputProps {
   users: User[]; // Define the props you expect
@@ -34,7 +35,7 @@ const Input: React.FC<InputProps> = ({ users, sendChat }) => {
   };
 
   return (
-    <div className="input-container">
+    <div className={styles.inputContainer}>
       <div>
         <textarea
           autoFocus
@@ -42,10 +43,9 @@ const Input: React.FC<InputProps> = ({ users, sendChat }) => {
           onChange={changeHandler}
           onKeyDown={keyDownHandler}
           rows={1}
-          cols={50}
         ></textarea>
       </div>
-      <button onClick={clickHandler} className="submit-button" type="submit">
+      <button disabled={value.length < 1} onClick={clickHandler} className={styles.submitButton} type="submit">
         Send
       </button>
     </div>

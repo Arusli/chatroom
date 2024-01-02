@@ -21,19 +21,6 @@
   align-items: flex-start;
 }
 
-button {
-  margin: 0 10px;
-  padding: 5px;
-  width: 80px;
-  height: 38px;
-  background-color: green;
-  color: white;
-  border-radius: 100px;
-  border: none;
-  font-size: 14px;
-  font-weight: bold;
-}
-
 textarea {
   padding: 10px;
   border-radius: 100px;
@@ -47,11 +34,6 @@ input {
 
 ul, li {
   list-style-position: inside;
-}
-
-button:hover {
-  cursor: pointer;
-  font-size: 18px;
 }
 
 .users-container {
