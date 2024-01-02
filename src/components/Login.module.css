@@ -1,0 +1,37 @@
+.loginContainer {
+  border: solid 1px black;
+  margin: 10px;
+  padding: 10px;
+}
+
+.loginContainer h3 {
+  margin-bottom: 10px;
+}
+
+.loginContainer input {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.button {
+  margin: 5px;
+  padding: 5px;
+  width: 80px;
+  height: 38px;
+  background-color: green;
+  color: white;
+  border-radius: 100px;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: lightgrey;
+}

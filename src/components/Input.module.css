@@ -1,6 +1,15 @@
 .inputContainer {
   display: flex;
   flex-direction: column;
+  margin: 0 10px;
+}
+
+.inputContainer textarea {
+  width: 50vw;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 100px;
+  resize: none;
 }
 
 .submitButton {
@@ -19,21 +28,14 @@
   cursor: pointer;
 }
 
-.inputContainer textarea {
-    width: 50vw;
-}
-
 .submitButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background-color: lightgrey;
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: lightgrey;
 }
 
-.submitButton:disabled:hover {
-    font-size: 14px;
-}
 @media screen and (max-width: 500px) {
-    .inputContainer textarea {
-        width: 90vw;
-    }
+  .inputContainer textarea {
+    width: 90vw;
+  }
 }

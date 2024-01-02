@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { User, pickColor } from "../constants/constants";
 import { pushUser, getUserByKey} from "../firebase";
+import styles from "./Login.module.css";
 
 interface LoginProps {
   currentUser: User; // Define the props you expect
@@ -50,7 +51,7 @@ const Login: React.FC<LoginProps> = ({
   };
 
   return (
-    <div className="login-container">
+    <div className={styles.loginContainer}>
       <h3>Join the Chat?</h3>
       <input
         placeholder="Enter Your Name"
@@ -59,7 +60,7 @@ const Login: React.FC<LoginProps> = ({
         onChange={handleChange}
         onKeyDown={keyDownHandler}
       ></input>
-      <button onClick={clickHandler} style={{ marginLeft: "10px" }}>
+      <button disabled={value.length < 1} className={styles.button} onClick={clickHandler} style={{ marginLeft: "10px" }}>
         Join
       </button>
     </div>
