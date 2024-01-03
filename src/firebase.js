@@ -28,6 +28,7 @@ export const analytics = getAnalytics(app);
 export const db = getDatabase();
 export const usersNodeReference = ref(db, "users");
 export const messagesNodeReference = ref(db, "messages");
+export const infoConnectedNodeReference = ref(db, ".info/connected");
 
 export const pushUser = async ({ name, color, online }) => {
   const referenceId = push(usersNodeReference, {
@@ -64,7 +65,7 @@ export const removeUser = async (user) => {
   } catch (e) {
     console.error(e);
   }
-}
+};
 
 export const getUserByKey = async (userKey) => {
   try {
@@ -90,7 +91,7 @@ export const setUserDisconnect = async (user) => {
   console.log("setUserDisconnect runs");
   try {
     const userReference = ref(db, `users/${user.id}`);
-    await onDisconnect(userReference).update({online: false});
+    await onDisconnect(userReference).update({ online: false });
   } catch (e) {
     console.error(e);
   }
