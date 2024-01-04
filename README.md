@@ -128,3 +128,15 @@ Reconnect (should be same as connect):
 onValue connection listener (setUserDisconnect settings: create entrance message, create blank exit message, add user) > 
 onValue DB listener (fetch updated user/message state)
 
+### if sessionUser not blank
+- push sessionUser (currentUser?) to DB
+- push entrance message to DB
+- push blank exit message to DB (status: exit)
+- set up onDisconnect logic (delete user from DB, backfill exit message
+
+### if sessionUser blank
+- do not set sessionUSer until login
+- do not push sessionUSer to DB until login
+- do not push entrance message to DB until login
+- do not push blank exit message to DB until login
+- do not set up onDisconnect logic (delete user from DB, backfill exit message) until logi
