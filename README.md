@@ -46,4 +46,85 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Notes
-How does the app know if a user is logged out or in? It can add users to the chat but can it remove?
+Q: How does the app know if a user is logged out or in? It can add users to the chat but can it remove?
+A: Firebase realtime db has event listeners.
+
+## Data flow happy login
+set currentUser with a useRef, assigning it the sessionStorage if exists.
+Push User to realtime DB when logging in.
+onValue knows if userDb was changed, pulls new users and updates users state.
+When users state changes, check currentUser with DB users. If same, update currentUser with newId... (maybe just use a uuid so we can avoid needing to update currentUser with newId.. or we can use a createdAt and match them that way.)
+
+## Data flow leave app with back button, returns
+(setUserDisconnect should be called when the currentUser is updated...)
+On disconnect with DB (onDisconnect), the currentUser is set to online: false. 
+Can we just remove the node instead? That would be easier. 
+Then I wouldn't need the onValue listener to pull the users, check for offline users, and removeUser. Yes it can:
+```
+import { ref, onDisconnect, remove } from 'firebase/database';
+import { db } from './yourFirebaseConfig'; // Import your Firebase configuration
+
+export const setUserDisconnect = async (user) => {
+  console.log("setUserDisconnect runs");
+  try {
+    const userReference = ref(db, `users/${user.id}`);
+    await onDisconnect(userReference).remove();
+  } catch (e) {
+    console.error(e);
+  }
+};
+```
+Then when user returns (onReconnect or similar), the currentUser is set to online: true. 
+But in some situations, the user would have been already deleted, 
+and we'd need to push a new User... 
+we could consider getting rid of the deleteUser functionality and keep record of all users in the Db.
+OR
+we always delete user onDisconnect, and always create new user on Connect.
+Q: would other users list get updated when user is deleted?
+A: I think so, because of onValue listener.
+In that case we can add a push a newUser onConnect (using this):
+```
+import { ref, onValue } from 'firebase/database';
+import { getDatabase } from 'firebase/app';
+
+function setupConnectionListener() {
+  const db = getDatabase();
+  const connectedRef = ref(db, '.info/connected');
+
+  onValue(connectedRef, (snapshot) => {
+    if (snapshot.val() === true) {
+      console.log('Connected to Firebase');
+      // Perform actions after connecting
+    } else {
+      console.log('Disconnected from Firebase');
+      // Handle disconnection
+    }
+  });
+}
+
+// Call this function in your component or at the start of your app
+setupConnectionListener();
+```
+Everytime a user connects we push the currentUser (unless currentUser is empty...), 
+because we always delete user onDisconnect.
+
+The issue with this is, the pushMessage (status: exit) doesn't run now,
+now that we skipped the online: false step. 
+How do we fix this? 
+We could write a message to the messages db onDisconnect
+We'll need to create an empty message node with push, and backfill it (with exit) onDisconnect
+Because that's how onDisconnect works.
+This will cause the message nodes to be out of chronological order, but that's okay because
+we can order them by createdAt.
+
+Connect:
+onValue connection listener (setUserDisconnect settings: create entrance message, create blank exit message, add user) > 
+onValue DB listener (fetch updated user/message state)
+
+Disconnect:
+onDisconnect connection listener (delete user, backfill exit message) > onValue DB listener (fetch updated user state, message state)
+
+Reconnect (should be same as connect):
+onValue connection listener (setUserDisconnect settings: create entrance message, create blank exit message, add user) > 
+onValue DB listener (fetch updated user/message state)
+
