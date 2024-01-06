@@ -6,7 +6,9 @@ import Login from "./components/Login";
 import {
   arrayFromUsersObj,
   arrayFromMessagesObj,
-  setUtc,
+  getSessionUser,
+  blankUser,
+  sortByCreatedAt,
 } from "./constants/constants";
 import type { User, Message } from "./constants/constants";
 import "./App.css";
@@ -14,54 +16,43 @@ import {
   pushMessage,
   usersNodeReference,
   messagesNodeReference,
-  setUserDisconnect,
-  removeUser
+  infoConnectedNodeReference,
 } from "./firebase";
-import { onValue, query, limitToLast } from "@firebase/database";
+import {
+  onValue,
+  query,
+  limitToLast,
+  orderByChild,
+  startAt,
+  serverTimestamp,
+} from "@firebase/database";
 
 function App(): JSX.Element {
-  const blankUser = {
-    name: "",
-    id: "",
-    color: "",
-    online: false,
-  };
-
   console.log("App renders");
   const [users, setUsers] = useState<User[]>([]);
   // const [usersDb, setUsersDb] = useState<any>({});
-  const [currentUser, setCurrentUser] = useState<User>(blankUser); // blankuser
+  const [currentUser, setCurrentUser] = useState<User>(() => {
+    return getSessionUser();
+  }); // blankuser
   const [messages, setMessages] = useState<Message[]>([]);
   // console.log("usersStore", users);
   // console.log("app.tsx userSnapshot", userSnapshot);
 
   useEffect(() => {
-    console.log("useEffect runs");
-    const unsubscribe = onValue( // fixes double messaging somehow
+    console.log("useEffect with onValue runs");
+    const unsubscribe = onValue(
+      // unsubscribe fixes double messaging somehow
       usersNodeReference,
       (snapshot) => {
         console.log("onValue runs");
         if (snapshot.exists()) {
           console.log("snapshot exists");
           const usersSnapshot = snapshot.val();
-          let usersArray = arrayFromUsersObj(usersSnapshot);
-          const offlineUser = usersArray.find((user) => {
-            return !user.online;
-          });
-          if (offlineUser) { // what if there are multiple offline users? this only runs when someone is online
-            const index = usersArray.indexOf(offlineUser);
-            usersArray.splice(index, 1);
-            removeUser(offlineUser);
-            pushMessage({
-              text: '',
-              senderName: offlineUser.name,
-              senderId: offlineUser.id,
-              createdAt: setUtc(0),
-              color: offlineUser.color,
-              status: 'exit',
-            })
-          }
-          setUsers(usersArray);
+          const usersArray = arrayFromUsersObj(usersSnapshot);
+          const activeUsers = usersArray.filter((user) => {
+            return user.online;
+          })
+          setUsers(activeUsers);
         } else {
           console.log("no data available");
         }
@@ -73,21 +64,78 @@ function App(): JSX.Element {
 
     return () => {
       unsubscribe();
-    }
+    };
   }, []);
+
+  // when iphone user navigates away and back, the app starts here and the previous useEffects don't run again.
+  // in other words navigating away on iphone does not unmount this component or the app.
+  useEffect(() => {
+    setCurrentUser(blankUser); // resets user no matter what on app re-render
+    const unsubscribe = onValue(infoConnectedNodeReference, (snapshot) => {
+      if (snapshot.exists()) {
+        const connected = snapshot.val();
+        const sessionUser = getSessionUser();
+        if (connected) {
+          console.log("CONNECTED TO DB");
+          //if sessionUser not blank
+          //push sessionUser (currentUser?) to DB
+          //push entrance message to DB
+          //push blank exit message to DB (status: exit)
+          //set up onDisconnect logic (delete user from DB, backfill exit message);
+
+          //or we can always blank the session user on connect... simpler.
+
+          //if sessionUser blank
+          //do not set sessionUser until login
+          //do not push sessionUser to DB until login
+          //do not push entrance message to DB until login
+          //do not push blank exit message to DB until login
+
+          //if sessionUser blank, on login
+          //push sessionUser to DB, receive refId.
+          //grab new user entry from database using refId, assign to currentUser (or session user...)
+          //push blank exit message (status 'blank') and receive refID.
+          //set up onDisconnect logic 
+            // (delete user from DB by refId, backfill exit message by refID, and update stat, senderID, createdAt, etc...);
+          if (sessionUser.name) {
+            console.log(`${sessionUser.name} has connected to DB`);
+          }
+
+          if (!sessionUser.name) {
+            console.log("new/blank user has connected to DB");
+          }
+
+          setCurrentUser(blankUser);
+        } else {
+          console.log("NOT CONNECTED TO DB");
+        }
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []); // what to do with this array dependency?
 
   useEffect(() => {
     console.log("useEffect runs");
-    const limitedQuery = query(messagesNodeReference, limitToLast(250
-      )); // queries last 250 messages
-    const unsubscribe = onValue( // returns an unsubscribe function to remove listener
+    const limitedQuery = query(
+      messagesNodeReference,
+      orderByChild("createdAt"),
+      startAt(1),
+      limitToLast(250),
+    ); // queries last 250 messages, sorted
+    const unsubscribe = onValue(
+      // returns an unsubscribe function to remove listener
       limitedQuery,
       (snapshot) => {
         console.log("onValue runs");
         if (snapshot.exists()) {
           console.log("snapshot exists");
           const messagesSnapshot = snapshot.val();
-          setMessages(arrayFromMessagesObj(messagesSnapshot));
+          const messagesArray = arrayFromMessagesObj(messagesSnapshot);
+          const sortedArray = sortByCreatedAt(messagesArray);
+          setMessages(sortedArray);
         } else {
           console.log("no data available");
         }
@@ -99,7 +147,7 @@ function App(): JSX.Element {
 
     return () => {
       unsubscribe(); // calls unsubscribe
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -109,17 +157,20 @@ function App(): JSX.Element {
   }, [users, currentUser, messages]);
 
   useEffect(() => {
+    console.log("CURRENT USER USEEFFECT RUNS");
     if (currentUser.name) {
+      console.log("current user name:", currentUser.name);
       pushMessage({
         text: "",
         senderName: currentUser.name,
         senderId: currentUser.id,
-        createdAt: setUtc(0),
+        createdAt: serverTimestamp(),
         color: currentUser.color,
         status: "entrance",
       });
-      setUserDisconnect(currentUser);
+      window.sessionStorage.setItem("sessionUser", JSON.stringify(currentUser));
     } else {
+      window.sessionStorage.removeItem("sessionUser");
       return;
     }
   }, [currentUser]);
@@ -129,43 +180,11 @@ function App(): JSX.Element {
       text: newMessage,
       senderName: currentUser.name,
       senderId: currentUser.id,
-      createdAt: setUtc(0),
+      createdAt: serverTimestamp(),
       color: currentUser.color,
       status: "message",
     });
   };
-
-  // const writeDb = (
-  //   <div>
-  //     <div>
-  //       <button
-  //         style={{ width: "150px", margin: "10px" }}
-  //         onClick={() =>
-  //           pushUser({ name: "Andrew", color: "purple", online: true })
-  //         }
-  //       >
-  //         Write User
-  //       </button>
-  //     </div>
-  //     <div>
-  //       <button
-  //         style={{ width: "150px" }}
-  //         onClick={() =>
-  //           pushMessage({
-  //             text: "hey its me",
-  //             senderName: currentUser.name,
-  //             senderId: currentUser.id,
-  //             createdAt: "createed12271093498UTC",
-  //             color: currentUser.color,
-  //             status: "message",
-  //           })
-  //         }
-  //       >
-  //         Write Message
-  //       </button>
-  //     </div>
-  //   </div>
-  // );
 
   if (currentUser.name) {
     return (
@@ -183,7 +202,6 @@ function App(): JSX.Element {
             <Input users={users} sendChat={sendChat} />
           </div>
         </section>
-        {/* {writeDb} */}
       </div>
     );
   } else {
@@ -201,7 +219,6 @@ function App(): JSX.Element {
             setUsers={setUsers}
           />
         </section>
-        {/* {writeDb} */}
       </div>
     );
   }

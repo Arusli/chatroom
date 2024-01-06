@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { User, pickColor } from "../constants/constants";
-import { pushUser, getUserByKey} from "../firebase";
+import { pushUser, pushMessage, getUserByKey, setUserDisconnect} from "../firebase";
 import styles from "./Login.module.css";
 
 interface LoginProps {
@@ -27,14 +27,26 @@ const Login: React.FC<LoginProps> = ({
       color: pickColor(),
       online: true,
     };
-    const currentUserKey = await pushUser({
+
+    const exitMessageId = await pushMessage({
+      status: 'exit',
+      createdAt: -1,
+    });
+
+    const currentUserKey = await pushUser({ // can i do this in useEffect when the currentUser changes?
       name: newUser.name,
       color: newUser.color,
       online: newUser.online,
+      exitMessageId: exitMessageId ? exitMessageId : "",
     });
-    const newUserWithKey = await getUserByKey(currentUserKey);
-    newUserWithKey.id = currentUserKey;
-    setCurrentUser(newUserWithKey); //updates currentUser, triggers useEffect
+
+    if (currentUserKey && exitMessageId) {
+      const newUserWithKey = await getUserByKey(currentUserKey);
+      newUserWithKey.id = currentUserKey;
+      setCurrentUser(newUserWithKey); //updates currentUser, triggers useEffect
+      setValue('');
+      setUserDisconnect(newUserWithKey);
+    }
   };
 
   const keyDownHandler = (e: React.KeyboardEvent) => {
