@@ -8,7 +8,6 @@ import {
   arrayFromMessagesObj,
   getSessionUser,
   sortByCreatedAt,
-  blankUser,
 } from "./constants/constants";
 import type { User, Message } from "./constants/constants";
 import "./App.css";
