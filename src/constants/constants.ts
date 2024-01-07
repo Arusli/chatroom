@@ -45,7 +45,7 @@ export const blankUser = {
   exitMessageId: "",
 };
 
-export const getSessionUser = () => {
+export const getSessionUser = (): User => {
   if (window.sessionStorage.getItem("sessionUser") !== null) {
     return JSON.parse(window.sessionStorage.getItem("sessionUser") as string);
   } else {

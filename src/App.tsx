@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Chatbox from "./components/Chatbox";
 import Input from "./components/Input";
 import OnlineUsers from "./components/OnlineUsers";
@@ -7,16 +7,19 @@ import {
   arrayFromUsersObj,
   arrayFromMessagesObj,
   getSessionUser,
-  blankUser,
   sortByCreatedAt,
+  blankUser,
 } from "./constants/constants";
 import type { User, Message } from "./constants/constants";
 import "./App.css";
 import {
   pushMessage,
+  pushUser,
+  setUserDisconnect,
   usersNodeReference,
   messagesNodeReference,
   infoConnectedNodeReference,
+  getUserByKey,
 } from "./firebase";
 import {
   onValue,
@@ -30,18 +33,16 @@ import {
 function App(): JSX.Element {
   console.log("App renders");
   const [users, setUsers] = useState<User[]>([]);
-  // const [usersDb, setUsersDb] = useState<any>({});
-  const [currentUser, setCurrentUser] = useState<User>(() => {
-    return getSessionUser();
-  }); // blankuser
+  // const [currentUser, setCurrentUser] = useState<User>(() => {
+  //   return getSessionUser();
+  // });
   const [messages, setMessages] = useState<Message[]>([]);
-  // console.log("usersStore", users);
-  // console.log("app.tsx userSnapshot", userSnapshot);
+  const [view, setView] = useState<"login" | "chat" | "loading">("loading");
+  const currentUser = useRef<User>(getSessionUser());
 
   useEffect(() => {
     console.log("useEffect with onValue runs");
     const unsubscribe = onValue(
-      // unsubscribe fixes double messaging somehow
       usersNodeReference,
       (snapshot) => {
         console.log("onValue runs");
@@ -51,7 +52,7 @@ function App(): JSX.Element {
           const usersArray = arrayFromUsersObj(usersSnapshot);
           const activeUsers = usersArray.filter((user) => {
             return user.online;
-          })
+          });
           setUsers(activeUsers);
         } else {
           console.log("no data available");
@@ -70,13 +71,12 @@ function App(): JSX.Element {
   // when iphone user navigates away and back, the app starts here and the previous useEffects don't run again.
   // in other words navigating away on iphone does not unmount this component or the app.
   useEffect(() => {
-    setCurrentUser(blankUser); // resets user no matter what on app re-render
     const unsubscribe = onValue(infoConnectedNodeReference, (snapshot) => {
       if (snapshot.exists()) {
         const connected = snapshot.val();
         const sessionUser = getSessionUser();
+        const reconnection = sessionUser.name ? true : false;
         if (connected) {
-          console.log("CONNECTED TO DB");
           //if sessionUser not blank
           //push sessionUser (currentUser?) to DB
           //push entrance message to DB
@@ -95,17 +95,18 @@ function App(): JSX.Element {
           //push sessionUser to DB, receive refId.
           //grab new user entry from database using refId, assign to currentUser (or session user...)
           //push blank exit message (status 'blank') and receive refID.
-          //set up onDisconnect logic 
-            // (delete user from DB by refId, backfill exit message by refID, and update stat, senderID, createdAt, etc...);
-          if (sessionUser.name) {
-            console.log(`${sessionUser.name} has connected to DB`);
+          //set up onDisconnect logic
+          // (delete user from DB by refId, backfill exit message by refID, and update stat, senderID, createdAt, etc...);
+          if (reconnection) {
+            console.log("sessionUser has re-connected:", sessionUser);
+            currentUser.current = sessionUser;
+            enter(currentUser.current);
+            setView("chat");
           }
-
-          if (!sessionUser.name) {
-            console.log("new/blank user has connected to DB");
+          if (!reconnection) {
+            console.log("new user has connected to DB");
+            setView("login");
           }
-
-          setCurrentUser(blankUser);
         } else {
           console.log("NOT CONNECTED TO DB");
         }
@@ -123,7 +124,7 @@ function App(): JSX.Element {
       messagesNodeReference,
       orderByChild("createdAt"),
       startAt(1),
-      limitToLast(250),
+      limitToLast(250)
     ); // queries last 250 messages, sorted
     const unsubscribe = onValue(
       // returns an unsubscribe function to remove listener
@@ -156,37 +157,84 @@ function App(): JSX.Element {
     console.log("messages", messages);
   }, [users, currentUser, messages]);
 
-  useEffect(() => {
-    console.log("CURRENT USER USEEFFECT RUNS");
-    if (currentUser.name) {
-      console.log("current user name:", currentUser.name);
-      pushMessage({
-        text: "",
-        senderName: currentUser.name,
-        senderId: currentUser.id,
-        createdAt: serverTimestamp(),
-        color: currentUser.color,
-        status: "entrance",
-      });
-      window.sessionStorage.setItem("sessionUser", JSON.stringify(currentUser));
-    } else {
-      window.sessionStorage.removeItem("sessionUser");
-      return;
-    }
-  }, [currentUser]);
+  // useEffect(() => {
+  //   console.log("CURRENT USER USEEFFECT RUNS");
+  //   if (currentUser.name) {
+  //     pushMessage({
+  //       text: "",
+  //       senderName: currentUser.name,
+  //       senderId: currentUser.id,
+  //       createdAt: serverTimestamp(),
+  //       color: currentUser.color,
+  //       status: "entrance",
+  //     });
+  //     window.sessionStorage.setItem("sessionUser", JSON.stringify(currentUser));
+  //   } else {
+  //     window.sessionStorage.removeItem("sessionUser");
+  //     return;
+  //   }
+  // }, [currentUser]);
 
   const sendChat = (newMessage: string) => {
     pushMessage({
       text: newMessage,
-      senderName: currentUser.name,
-      senderId: currentUser.id,
+      senderName: currentUser.current.name,
+      senderId: currentUser.current.id,
       createdAt: serverTimestamp(),
-      color: currentUser.color,
+      color: currentUser.current.color,
       status: "message",
     });
   };
 
-  if (currentUser.name) {
+  const enter = async (user: User) => {
+    const exitMessageId = await pushMessage({
+      status: "exit",
+      createdAt: -1,
+    });
+
+    const currentUserKey = await pushUser({
+      name: user.name,
+      color: user.color,
+      online: user.online,
+      exitMessageId: exitMessageId ? exitMessageId : "",
+    });
+
+    if (currentUserKey && exitMessageId) {
+      const newUserWithKey = await getUserByKey(currentUserKey);
+      newUserWithKey.id = currentUserKey;
+      // setCurrentUser(newUserWithKey); //updates currentUser, triggers useEffect
+      currentUser.current = newUserWithKey;
+      window.sessionStorage.setItem(
+        "sessionUser",
+        JSON.stringify(currentUser.current)
+      );
+      pushMessage({
+        text: "",
+        senderName: currentUser.current.name,
+        senderId: currentUser.current.id,
+        createdAt: serverTimestamp(),
+        color: currentUser.current.color,
+        status: "entrance",
+      });
+      setUserDisconnect(newUserWithKey);
+      setView("chat");
+    }
+  };
+
+  if (view === "login") {
+    return (
+      <div className="wrapper">
+        <section className="section1">
+          <div className="users-container">
+            <OnlineUsers users={users} />
+          </div>
+        </section>
+        <section className="section2">
+          <Login currentUser={currentUser.current} enter={enter} />
+        </section>
+      </div>
+    );
+  } else if (view === "chat") {
     return (
       <div className="wrapper">
         <section className="section1">
@@ -205,22 +253,7 @@ function App(): JSX.Element {
       </div>
     );
   } else {
-    return (
-      <div className="wrapper">
-        <section className="section1">
-          <div className="users-container">
-            <OnlineUsers users={users} />
-          </div>
-        </section>
-        <section className="section2">
-          <Login
-            currentUser={currentUser}
-            setCurrentUser={setCurrentUser}
-            setUsers={setUsers}
-          />
-        </section>
-      </div>
-    );
+    return <></>;
   }
 }
 
