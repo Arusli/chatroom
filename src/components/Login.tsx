@@ -18,35 +18,6 @@ const Login: React.FC<LoginProps> = ({
     }
   };
 
-  // const enter = async () => {
-  //   const newUser = {
-  //     ...currentUser,
-  //     name: value,
-  //     color: pickColor(),
-  //     online: true,
-  //   };
-
-  //   const exitMessageId = await pushMessage({
-  //     status: 'exit',
-  //     createdAt: -1,
-  //   });
-
-  //   const currentUserKey = await pushUser({ // can i do this in useEffect when the currentUser changes?
-  //     name: newUser.name,
-  //     color: newUser.color,
-  //     online: newUser.online,
-  //     exitMessageId: exitMessageId ? exitMessageId : "",
-  //   });
-
-  //   if (currentUserKey && exitMessageId) {
-  //     const newUserWithKey = await getUserByKey(currentUserKey);
-  //     newUserWithKey.id = currentUserKey;
-  //     setCurrentUser(newUserWithKey); //updates currentUser, triggers useEffect
-  //     setValue('');
-  //     setUserDisconnect(newUserWithKey);
-  //   }
-  // };
-
   const keyDownHandler = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey && value.length > 1) {
       e.preventDefault(); // prevents new line inside text area

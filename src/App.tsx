@@ -32,9 +32,6 @@ import {
 function App(): JSX.Element {
   console.log("App renders");
   const [users, setUsers] = useState<User[]>([]);
-  // const [currentUser, setCurrentUser] = useState<User>(() => {
-  //   return getSessionUser();
-  // });
   const [messages, setMessages] = useState<Message[]>([]);
   const [view, setView] = useState<"login" | "chat" | "loading">("loading");
   const currentUser = useRef<User>(getSessionUser());
@@ -156,24 +153,6 @@ function App(): JSX.Element {
     console.log("messages", messages);
   }, [users, currentUser, messages]);
 
-  // useEffect(() => {
-  //   console.log("CURRENT USER USEEFFECT RUNS");
-  //   if (currentUser.name) {
-  //     pushMessage({
-  //       text: "",
-  //       senderName: currentUser.name,
-  //       senderId: currentUser.id,
-  //       createdAt: serverTimestamp(),
-  //       color: currentUser.color,
-  //       status: "entrance",
-  //     });
-  //     window.sessionStorage.setItem("sessionUser", JSON.stringify(currentUser));
-  //   } else {
-  //     window.sessionStorage.removeItem("sessionUser");
-  //     return;
-  //   }
-  // }, [currentUser]);
-
   const sendChat = (newMessage: string) => {
     pushMessage({
       text: newMessage,
@@ -201,7 +180,6 @@ function App(): JSX.Element {
     if (currentUserKey && exitMessageId) {
       const newUserWithKey = await getUserByKey(currentUserKey);
       newUserWithKey.id = currentUserKey;
-      // setCurrentUser(newUserWithKey); //updates currentUser, triggers useEffect
       currentUser.current = newUserWithKey;
       window.sessionStorage.setItem(
         "sessionUser",

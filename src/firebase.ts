@@ -92,7 +92,6 @@ export const setUserDisconnect = async (user: User) => {
     const userReference = ref(db, `users/${user.id}`);
     const exitMessageReference = ref(db, `messages/${user.exitMessageId}`)
     await onDisconnect(userReference).update({ online: false });
-    // await onDisconnect(userReference).remove();
     await onDisconnect(exitMessageReference).update({
       color: user.color,
       createdAt: serverTimestamp(),
